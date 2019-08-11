@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>创建组件</title>
+
+    <script src="../js/vue-2.4.0.js"></script>
+
+    <link rel="stylesheet" href="../css/bootstrap-3.3.7.css">
+</head>
+<body>
+<div id="app">
+    <login></login>
+</div>
+
+
+<script>
+
+    var vm = new Vue({
+        el: '#app',
+        data: {},
+        methods: {},
+        filters: {},
+        directives: {},
+
+        // 组件可以有自己的data数据
+        // 组件的data数据和实例的data数据不一样,实例中的data可以为一个对象,但是组件中的data必须是一个方法
+        // 组件的data除了是一个方法之外,还必须返回一个对象才行
+        // 组件中的data数据使用方式和实例中一样
+        components: {
+            // 定义名称为login的组件
+            login: {
+                template: '<h3>这是私有的login组件,{{ msg }}</h3>',
+                data: function () {
+                    return {
+                        msg: '这是组件中data定义的数据'
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

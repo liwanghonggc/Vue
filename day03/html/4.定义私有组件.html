@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>创建组件</title>
+
+    <script src="../js/vue-2.4.0.js"></script>
+
+    <link rel="stylesheet" href="../css/bootstrap-3.3.7.css">
+</head>
+<body>
+<div id="app">
+    <login></login>
+</div>
+
+
+<script>
+
+    var vm = new Vue({
+        el: '#app',
+        data: {},
+        methods: {},
+        filters: {},
+        directives: {},
+
+        components: {
+            // 定义名称为login的组件
+            login: {
+                template: '<h3>这是私有的login组件</h3>'
+            }
+        }
+    });
+</script>
+</body>
+</html>
