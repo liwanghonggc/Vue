@@ -11,6 +11,8 @@
 <body>
 <div id="app">
     <h3 id="h3">{{ msg }}</h3>
+
+    <input type="button" value="修改msg" @click="msg='NO'">
 </div>
 
 <script>
@@ -46,6 +48,22 @@
         mounted(){
             // 输出ok
             console.log(document.getElementById('h3').innerText);
+        },
+
+
+        // 接下来是运行中的两个事件
+        beforeUpdate(){
+            // 当执行beforeUpdate时,页面中显示的数据还是旧的,而data中的数据已经更新了
+            // 输出ok NO
+            console.log('页面中的元素内容是: ' + document.getElementById('h3').innerText);
+            console.log('data中的msg数据是: ' + this.msg);
+        },
+
+        updated(){
+            // 当执行updated时,页面和data已经保持同步了
+            // 输出NO NO
+            console.log('页面中的元素内容是: ' + document.getElementById('h3').innerText);
+            console.log('data中的msg数据是: ' + this.msg);
         }
     });
 </script>
