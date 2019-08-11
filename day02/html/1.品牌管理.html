@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>品牌管理</title>
+
+    <script src="../js/vue-2.4.0.js"></script>
+
+    <link rel="stylesheet" href="../css/bootstrap-3.3.7.css">
+</head>
+<body>
+<div id="app">
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">添加品牌</h3>
+        </div>
+        <div class="panel-body form-inline">
+            <label>
+                Id:
+                <input type="text" class="form-control" v-model="id">
+            </label>
+
+            <label>
+                Name:
+                <!--@keyup.enter="add"-->
+                <input type="text" class="form-control" v-model="name" @keyup.f2="add">
+            </label>
+
+            <!-- 在Vue中，使用事件绑定机制，为元素指定处理函数的时候，如果加了小括号，就可以给函数传参了 -->
+            <input type="button" value="添加" class="btn btn-primary" @click="add" v-fontweight="'900'">
+
+            <label>
+                搜索名称关键字：
+                <input type="text" class="form-control" v-model="keywords" v-focus v-color="'blue'">
+                <!--<input type="button" value="搜索" class="btn btn-primary" @click="search">-->
+            </label>
+        </div>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>Ctime</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="item in search(keywords)" :key="item.id">
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.ctime | dateFormat}}</td>
+            <td>
+                <a href="" @click.prevent="del(item.id)">删除</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // 全局过滤器
+    Vue.filter('dateFormat', function (dateStr) {
+        var dt = new Date(dateStr);
+
+        var y = dt.getFullYear();
+        // padStart是ES6新提供的语法,参数2是补长至两位,参数0是用0补长
+        var m = (dt.getMonth() + 1).toString().padStart(2, '0');
+        var d = (dt.getDate()).toString().padStart(2, '0');
+
+        return `${y}-${m}-${d}`;
+    });
+
+    // 自定义全局按键修饰符
+    Vue.config.keyCodes.f2 = 113;
+
+    // 使用Vue.directive定义全局的指令 v-focus,自动获取焦点
+    Vue.directive('focus', {
+        // 每当指令绑定到元素上的时候,会立即执行这个bind方法,只执行一次.这里用来获取焦点是不可以的,因为绑定时该元素并没有插入到DOM中
+        bind: function (el) {
+            // el是原生的JS对象
+            el.focus();
+        },
+        // 元素被插入到DOM中,会执行inserted函数
+        inserted: function (el) {
+            el.focus();
+        },
+        updated: function () {
+
+        }
+    });
+
+    // 自定义一个设置字体颜色的指令
+    Vue.directive('color', {
+        // 样式只要给了元素,不管它有没有被插入到页面中去
+        // binding用来记录指定的一些参数
+        bind: function (el, binding) {
+            el.style.color = binding.value;
+        }
+    })
+    
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            id: '',
+            name: '',
+            keywords: '',
+            list: [
+                {id: 1, name: '宝马', ctime: new Date()},
+                {id: 2, name: '奔驰', ctime: new Date()},
+                {id: 3, name: '哈弗', ctime: new Date()},
+                {id: 4, name: '吉利', ctime: new Date()}
+            ]
+        },
+        methods: {
+            add(){
+                if(this.isEmpty(this.id) || this.isEmpty(this.name)){
+                    alert('填写完整');
+                    return;
+                }
+                this.list.push({id : this.id, name : this.name, ctime : new Date()});
+                this.id = '';
+                this.name = '';
+            },
+            del(id){
+                /**
+                var index = this.list.findIndex(item => {
+                    if(item.id === id){
+                        return true;
+                    }
+                });
+                this.list.splice(index, 1);
+                 */
+                this.list.some((item, i) => {
+                    if(item.id === id){
+                        this.list.splice(i, 1);
+                        return true;
+                    }
+                });
+            },
+            search(keywords){
+                /**
+                var newList = [];
+                this.list.forEach(item => {
+                    if(item.name.indexOf(keywords) != -1){
+                        newList.push(item);
+                    }
+                });
+                return newList;
+                 */
+                return this.list.filter(item => {
+                    if(item.name.includes(keywords)){
+                        return item;
+                    }
+                });
+            },
+            isEmpty(item){
+                if(item === null || item === ''){
+                    return true;
+                }
+                return false;
+            }
+        },
+        
+        // 私有的过滤器
+        filters: {
+            dateFormatPrivate: function (dateStr) {
+
+            }
+        },
+
+        // 私有的指令
+        directives: {
+            'fontweight': {
+                bind: function (el, binding) {
+                    el.style.fontWeight = binding.value;
+                }
+            },
+
+            // 指令的简写形式,省去了bind函数,这一写法等同于bind和update方法
+            'fontsize': function (el, binding) {
+                el.style.fontsize = binding.value;
+            }
+        }
+    });
+
+
+</script>
+</body>
+</html>
